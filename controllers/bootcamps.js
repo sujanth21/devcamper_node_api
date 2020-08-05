@@ -1,4 +1,5 @@
 const Bootcamp = require("../models/Bootcamp");
+const ErrorResponse = require("../utils/errorResponse");
 
 // @desc     Get all bootcamps
 // @route    GET /api/v1/bootcamps
@@ -13,10 +14,7 @@ exports.getBootcamps = async (req, res, next) => {
       data: bootcamps,
     });
   } catch (e) {
-    res.status(500).json({
-      success: false,
-      error: e,
-    });
+    next(e);
   }
 };
 
@@ -29,9 +27,10 @@ exports.getBootcamp = async (req, res, next) => {
     const bootcamp = await Bootcamp.findById(_id);
 
     if (!bootcamp) {
-      return res
-        .status(404)
-        .json({ success: false, error: "Bootcamp not found in the DB" });
+      return next(
+        new ErrorResponse(`Bootcamp with id ${_id} not found in the DB`),
+        404
+      );
     }
 
     res.status(200).json({
@@ -39,10 +38,7 @@ exports.getBootcamp = async (req, res, next) => {
       data: bootcamp,
     });
   } catch (e) {
-    res.status(500).json({
-      success: false,
-      error: e,
-    });
+    next(e);
   }
 };
 
@@ -58,10 +54,7 @@ exports.createBootcamp = async (req, res, next) => {
       data: bootcamp,
     });
   } catch (e) {
-    res.status(400).json({
-      success: false,
-      error: e,
-    });
+    next(e);
   }
 };
 
@@ -77,9 +70,10 @@ exports.updateBootcamp = async (req, res, next) => {
     });
 
     if (!bootcamp) {
-      return res
-        .status(404)
-        .json({ success: true, error: "Bootcamp not found in the DB" });
+      return next(
+        new ErrorResponse(`Bootcamp with id ${_id} not found in the DB`),
+        404
+      );
     }
 
     res.status(200).json({
@@ -87,10 +81,7 @@ exports.updateBootcamp = async (req, res, next) => {
       data: bootcamp,
     });
   } catch (e) {
-    res.status(400).json({
-      success: false,
-      error: e,
-    });
+    next(e);
   }
 };
 
@@ -103,14 +94,14 @@ exports.deleteBootcamp = async (req, res, next) => {
     const bootcamp = await Bootcamp.findByIdAndDelete(_id);
 
     if (!bootcamp) {
-      return res.status(404).json({
-        success: false,
-        error: "Bootcamp not found in DB",
-      });
+      return next(
+        new ErrorResponse(`Bootcamp with id ${_id} not found in the DB`),
+        404
+      );
     }
 
     res.status(200).json({ success: true, data: bootcamp });
   } catch (error) {
-    res.status(500).json({ success: false, error: e });
+    next(e);
   }
 };
