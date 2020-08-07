@@ -94,3 +94,64 @@ exports.addCourse = async (req, res, next) => {
     });
   }
 };
+
+// @desc    Update a course
+// @route   PUT /api/v1/courses/:id
+// @access  Private
+exports.updateCourse = async (req, res, next) => {
+  const _id = req.params.id;
+
+  try {
+    let course = await Course.findById(_id);
+
+    if (!course) {
+      return next(
+        new ErrorResponse(`No course exist with the id of ${_id}`, 404)
+      );
+    }
+
+    course = await Course.findByIdAndUpdate(_id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: course,
+    });
+  } catch (e) {
+    res.status(400).json({
+      success: false,
+      error: e,
+    });
+  }
+};
+
+// @desc    Delete a course
+// @route   DELETE /api/v1/courses/:id
+// @access  Private
+exports.deleteCourse = async (req, res, next) => {
+  const _id = req.params.id;
+
+  try {
+    const course = await Course.findById(_id);
+
+    if (!course) {
+      return next(
+        new ErrorResponse(`No course exist with the id of ${_id}`, 404)
+      );
+    }
+
+    await course.remove();
+
+    res.status(200).json({
+      success: true,
+      data: {},
+    });
+  } catch (e) {
+    res.status(500).json({
+      success: false,
+      error: e,
+    });
+  }
+};
