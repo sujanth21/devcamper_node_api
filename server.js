@@ -15,6 +15,7 @@ const bootcampsRouter = require("./routes/bootcamps");
 const coursesRouter = require("./routes/courses");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/users");
+const reviewRouter = require("./routes/reviews");
 
 connectDB();
 
@@ -43,6 +44,7 @@ app.use("/api/v1/bootcamps", bootcampsRouter);
 app.use("/api/v1/courses", coursesRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/reviews", reviewRouter);
 
 app.use(errorHandler);
 
