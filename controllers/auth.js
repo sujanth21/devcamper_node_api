@@ -97,6 +97,31 @@ exports.updateDetails = async (req, res, next) => {
   }
 };
 
+// @desc    Update user password
+// @route   PUT /api/v1/auth/updatepassword
+// @access  Private
+exports.updatePassword = async (req, res, next) => {
+  const _id = req.user.id;
+  try {
+    const user = await User.findById(_id).select("+password");
+
+    if (!(await user.matchPassword(req.body.currentPassword))) {
+      return next(new ErrorResponse("Password is incorrect", 401));
+    }
+
+    user.password = req.body.newPassword;
+    await user.save();
+
+    sendTokenResponse(user, 200, res);
+    
+  } catch (e) {
+    res.status(400).json({
+      success: false,
+      error: e,
+    });
+  }
+};
+
 // @desc    Reset forgot password
 // @route   /api/v1/auth/forgotpassword
 // @access  Public
