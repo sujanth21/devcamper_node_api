@@ -30,6 +30,9 @@ const app = express();
 //Body parser
 app.use(express.json());
 
+//Set static folder
+app.use(express.static(path.join(__dirname, "public")));
+
 //Cookie Parser
 app.use(cookieParser());
 
@@ -64,9 +67,6 @@ app.use(limitter);
 
 //Prevent http param polution
 app.use(hpp);
-
-//Set static folder
-app.use(express.static(path.join(__dirname, "public")));
 
 //Mount routers
 app.use("/api/v1/bootcamps", bootcampsRouter);
